@@ -1,0 +1,1 @@
+In random intervals the session gets into unauthorized state even when logged in, resulting in the user not being able to perform any operation (add, edit, delete) or view the table results - in case the unauthorized state appears right after login.
