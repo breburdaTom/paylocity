@@ -1,4 +1,5 @@
 venv/
+__pycache__/
 
 # E2E test artifacts
 test/e2e/node_modules/
@@ -6,4 +7,4 @@ test/e2e/test-results/
 test/e2e/playwright-report/
 test/e2e/blob-report/
 test/e2e/dist/
-test/e2e/.env
+.env

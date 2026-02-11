@@ -1,4 +1,5 @@
 import { test, expect } from "../fixtures/base.fixture";
+import { ENV } from "../utils/env";
 
 test.describe("Login Page", () => {
   test.beforeEach(async ({ loginPage }) => {
@@ -13,7 +14,7 @@ test.describe("Login Page", () => {
     loginPage,
     dashboardPage,
   }) => {
-    await loginPage.login(process.env.TEST_USERNAME, process.env.TEST_PASSWORD);
+    await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
     await dashboardPage.expectToBeVisible();
   });
 
@@ -23,12 +24,12 @@ test.describe("Login Page", () => {
   });
 
   test("should show error with empty username", async ({ loginPage }) => {
-    await loginPage.login("", process.env.TEST_PASSWORD);
+    await loginPage.login("", ENV.TEST_PASSWORD);
     await loginPage.expectErrorMessage();
   });
 
   test("should show error with empty password", async ({ loginPage }) => {
-    await loginPage.login(process.env.TEST_USERNAME, "");
+    await loginPage.login(ENV.TEST_USERNAME, "");
     await loginPage.expectErrorMessage();
   });
 });

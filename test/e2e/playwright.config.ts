@@ -1,7 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { ENV } from "./utils/env";
 
 export default defineConfig({
   testDir: "./tests",
@@ -15,7 +13,7 @@ export default defineConfig({
     timeout: 5_000,
   },
   use: {
-    baseURL: process.env.BASE_URL || "https://wmxrwq14uc.execute-api.us-east-1.amazonaws.com/Prod",
+    baseURL: ENV.BASE_URL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
