@@ -106,25 +106,3 @@ jobs:
           name: e2e-test-results
           path: test/e2e/test-results/
           retention-days: 14
-
-  # ──────────────────────────────────────────────
-  # Final status gate — useful for branch protection
-  # Reports unified pass/fail across both suites.
-  # ──────────────────────────────────────────────
-  test-results:
-    name: Test Results
-    runs-on: ubuntu-latest
-    if: always()
-    needs: [api-tests, e2e-tests]
-
-    steps:
-      - name: Check API tests result
-        if: needs.api-tests.result == 'failure'
-        run: echo "::error::API tests failed" && exit 1
-
-      - name: Check E2E tests result
-        if: needs.e2e-tests.result == 'failure'
-        run: echo "::error::E2E tests failed" && exit 1
-
-      - name: All tests passed
-        run: echo "All test suites passed successfully"
