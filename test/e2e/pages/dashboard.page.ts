@@ -3,26 +3,40 @@ import { type Locator, type Page, expect } from "@playwright/test";
 /**
  * Page Object Model for the Benefits Dashboard page.
  *
- * Selectors are defined as placeholders — replace with actual selectors
- * once they are available.
+ * Selectors are defined using Playwright best practices:
+ * role-based locators and scoped CSS selectors where appropriate.
  */
 export class DashboardPage {
   readonly page: Page;
 
-  // --- Selectors (placeholders) ---
+  // --- Selectors ---
   readonly addEmployeeButton: Locator;
   readonly employeesTable: Locator;
   readonly employeesTableRows: Locator;
-  readonly pageTitle: Locator;
+
+  // Delete confirmation modal selectors
+  readonly deleteModal: Locator;
+  readonly deleteConfirmButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    // TODO: Replace placeholder selectors with actual selectors
-    this.addEmployeeButton = page.locator("PLACEHOLDER_ADD_EMPLOYEE_BUTTON");
-    this.employeesTable = page.locator("PLACEHOLDER_EMPLOYEES_TABLE");
-    this.employeesTableRows = page.locator("PLACEHOLDER_EMPLOYEES_TABLE_ROWS");
-    this.pageTitle = page.locator("PLACEHOLDER_PAGE_TITLE");
+    this.addEmployeeButton = page.getByRole("button", { name: "Add Employee" });
+    this.employeesTable = page.getByRole("table");
+    this.employeesTableRows = page.locator("#employeesTable tbody tr");
+
+    this.deleteModal = page.locator("#deleteModal");
+    this.deleteConfirmButton = page.locator("#deleteEmployee");
+  }
+
+  // --- Waits ---
+
+  /**
+   * Wait for the employee table data to be loaded.
+   * This ensures the page's JavaScript (jQuery handlers, API calls) has fully executed.
+   */
+  async waitForTableData(): Promise<void> {
+    await this.employeesTableRows.first().waitFor({ state: "visible", timeout: 10_000 });
   }
 
   // --- Actions ---
@@ -47,18 +61,17 @@ export class DashboardPage {
    */
   async clickEditAction(rowIndex: number): Promise<void> {
     const row = this.employeesTableRows.nth(rowIndex);
-    // TODO: Replace placeholder selector with actual edit button selector within the row
-    await row.locator("PLACEHOLDER_EDIT_BUTTON").click();
+    await row.locator("i.fa-edit").click();
   }
 
   /**
-   * Click the Delete (X) action for a specific employee row.
+   * Click the Delete (X) action for a specific employee row and confirm deletion.
    * @param rowIndex - zero-based index of the row in the table
    */
   async clickDeleteAction(rowIndex: number): Promise<void> {
     const row = this.employeesTableRows.nth(rowIndex);
-    // TODO: Replace placeholder selector with actual delete button selector within the row
-    await row.locator("PLACEHOLDER_DELETE_BUTTON").click();
+    await row.locator("i.fa-times").click();
+    await this.confirmDelete();
   }
 
   /**
@@ -66,7 +79,6 @@ export class DashboardPage {
    * Returns the Locator for the matching row.
    */
   getEmployeeRow(firstName: string, lastName: string): Locator {
-    // TODO: Adjust the row-matching strategy based on actual table structure
     return this.employeesTableRows.filter({
       hasText: `${firstName}`,
     }).filter({
@@ -79,17 +91,27 @@ export class DashboardPage {
    */
   async clickEditForEmployee(firstName: string, lastName: string): Promise<void> {
     const row = this.getEmployeeRow(firstName, lastName);
-    // TODO: Replace placeholder selector with actual edit button selector within the row
-    await row.locator("PLACEHOLDER_EDIT_BUTTON").click();
+    await row.locator("i.fa-edit").click();
   }
 
   /**
-   * Click the Delete (X) action for a specific employee identified by name.
+   * Click the Delete (X) action for a specific employee identified by name
+   * and confirm deletion in the confirmation modal.
    */
   async clickDeleteForEmployee(firstName: string, lastName: string): Promise<void> {
     const row = this.getEmployeeRow(firstName, lastName);
-    // TODO: Replace placeholder selector with actual delete button selector within the row
-    await row.locator("PLACEHOLDER_DELETE_BUTTON").click();
+    await row.locator("i.fa-times").click();
+    await this.confirmDelete();
+  }
+
+  /**
+   * Confirm deletion in the delete confirmation modal.
+   * Clicks the "Delete" button and waits for the modal to close.
+   */
+  private async confirmDelete(): Promise<void> {
+    await expect(this.deleteModal).toBeVisible();
+    await this.deleteConfirmButton.click();
+    await expect(this.deleteModal).not.toBeVisible();
   }
 
   // --- Table Data Extraction ---
@@ -102,7 +124,6 @@ export class DashboardPage {
     const row = this.getEmployeeRow(firstName, lastName);
     const cells = row.locator("td");
 
-    // TODO: Adjust column indices based on actual table structure
     return {
       id: (await cells.nth(0).textContent()) ?? "",
       lastName: (await cells.nth(1).textContent()) ?? "",

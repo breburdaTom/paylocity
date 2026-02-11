@@ -3,13 +3,13 @@ import { type Locator, type Page, expect } from "@playwright/test";
 /**
  * Page Object Model for the Login page.
  *
- * Selectors are defined as placeholders — replace with actual selectors
- * once they are available.
+ * Selectors are defined using Playwright best practices:
+ * role-based and label-based locators where possible.
  */
 export class LoginPage {
   readonly page: Page;
 
-  // --- Selectors (placeholders) ---
+  // --- Selectors ---
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
@@ -18,11 +18,10 @@ export class LoginPage {
   constructor(page: Page) {
     this.page = page;
 
-    // TODO: Replace placeholder selectors with actual selectors
-    this.usernameInput = page.locator("PLACEHOLDER_USERNAME_INPUT");
-    this.passwordInput = page.locator("PLACEHOLDER_PASSWORD_INPUT");
-    this.loginButton = page.locator("PLACEHOLDER_LOGIN_BUTTON");
-    this.errorMessage = page.locator("PLACEHOLDER_ERROR_MESSAGE");
+    this.usernameInput = page.getByLabel("Username");
+    this.passwordInput = page.getByLabel("Password");
+    this.loginButton = page.getByRole("button", { name: "Log In" });
+    this.errorMessage = page.locator(".validation-summary-errors");
   }
 
   // --- Actions ---

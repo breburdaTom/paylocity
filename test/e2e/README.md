@@ -80,15 +80,6 @@ npm run test:debug
 npm run test:report
 ```
 
-## Selectors
-
-All selectors in the Page Object Models are currently **placeholders** (e.g., `PLACEHOLDER_USERNAME_INPUT`). Replace them with actual CSS/XPath/test-id selectors once they are available.
-
-### Files to update:
-- `pages/login.page.ts` — Login form selectors
-- `pages/dashboard.page.ts` — Dashboard table and action button selectors
-- `pages/employee-modal.page.ts` — Modal form field selectors
-
 ## Benefits Calculation Rules
 
 | Rule                          | Value              |

@@ -12,9 +12,8 @@ export const test = baseTest.extend({
     // Navigate to login page and authenticate
     await loginPage.goto();
     await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
-
-    // Wait for navigation to the dashboard
     await dashboardPage.expectToBeVisible();
+    await dashboardPage.waitForTableData();
 
     await use(dashboardPage);
   },

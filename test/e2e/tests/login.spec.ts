@@ -23,6 +23,13 @@ test.describe("Login Page", () => {
     await loginPage.expectErrorMessage();
   });
 
+  test("should show error with valid username and invalid password", async ({
+    loginPage,
+  }) => {
+    await loginPage.login(ENV.TEST_USERNAME, "invalidPassword");
+    await loginPage.expectErrorMessage();
+  });
+
   test("should show error with empty username", async ({ loginPage }) => {
     await loginPage.login("", ENV.TEST_PASSWORD);
     await loginPage.expectErrorMessage();

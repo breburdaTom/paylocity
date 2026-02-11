@@ -3,13 +3,12 @@ import { type Locator, type Page, expect } from "@playwright/test";
 /**
  * Page Object Model for the Add/Edit Employee modal dialog.
  *
- * Selectors are defined as placeholders — replace with actual selectors
- * once they are available.
+ * 
  */
 export class EmployeeModal {
   readonly page: Page;
 
-  // --- Selectors (placeholders) ---
+  // --- Selectors ---
   readonly modalContainer: Locator;
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
@@ -22,15 +21,14 @@ export class EmployeeModal {
   constructor(page: Page) {
     this.page = page;
 
-    // TODO: Replace placeholder selectors with actual selectors
-    this.modalContainer = page.locator("");
-    this.firstNameInput = page.locator("PLACEHOLDER_FIRST_NAME_INPUT");
-    this.lastNameInput = page.locator("PLACEHOLDER_LAST_NAME_INPUT");
-    this.dependantsInput = page.locator("PLACEHOLDER_DEPENDANTS_INPUT");
-    this.addButton = page.locator("PLACEHOLDER_ADD_BUTTON");
-    this.updateButton = page.locator("PLACEHOLDER_UPDATE_BUTTON");
-    this.cancelButton = page.locator("PLACEHOLDER_CANCEL_BUTTON");
-    this.closeButton = page.locator("PLACEHOLDER_CLOSE_BUTTON");
+    this.modalContainer = page.locator("#employeeModal .modal-content");
+    this.firstNameInput = page.getByLabel("First Name:");
+    this.lastNameInput = page.getByLabel("Last Name:");
+    this.dependantsInput = page.getByLabel("Dependents:");
+    this.addButton = page.getByRole("button", { name: "Add", exact: true });
+    this.updateButton = page.getByRole("button", { name: "Update" });
+    this.cancelButton = page.getByRole("button", { name: "Cancel" });
+    this.closeButton = page.getByRole("button", { name: "Close" });
   }
 
   // --- Actions ---

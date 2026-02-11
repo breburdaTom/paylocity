@@ -25,14 +25,20 @@ test.describe("Scenario 2: Edit Employee", () => {
   test.afterEach(async ({ dashboardPage }) => {
     // Best-effort cleanup: try to delete the employee created in beforeEach.
     // The name may have changed during the test, so we attempt the original name.
-    // Silently ignore errors — the employee may already be deleted or renamed.
-    try {
-      await dashboardPage.clickDeleteForEmployee(
-        originalEmployee.firstName,
-        originalEmployee.lastName
-      );
-    } catch {
-      // Employee already deleted or renamed — nothing to clean up
+    // Skip if the employee row is no longer visible (already deleted or renamed).
+    const row = dashboardPage.getEmployeeRow(
+      originalEmployee.firstName,
+      originalEmployee.lastName
+    );
+    if (await row.isVisible().catch(() => false)) {
+      try {
+        await dashboardPage.clickDeleteForEmployee(
+          originalEmployee.firstName,
+          originalEmployee.lastName
+        );
+      } catch {
+        // Silently ignore — employee may have been deleted mid-operation
+      }
     }
   });
 
