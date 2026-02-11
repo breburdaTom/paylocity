@@ -86,7 +86,7 @@ jobs:
       - name: Run E2E tests
         env:
           CI: "true"
-          BASE_URL: ${{ secrets.BASE_URL }}
+          BASE_URL: "https://wmxrwq14uc.execute-api.us-east-1.amazonaws.com/Prod"
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         run: npx playwright test
