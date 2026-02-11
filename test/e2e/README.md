@@ -21,9 +21,8 @@ test/e2e/
 │   └── login.spec.ts           # Login page tests
 ├── utils/                  # Shared utilities
 │   ├── benefits-calculator.ts  # Benefits cost calculation helpers
-│   └── data-factory.ts         # Random test data generation
-├── .env                    # Environment variables (not committed)
-├── .env.example            # Example environment variables
+│   ├── data-factory.ts         # Random test data generation
+│   └── env.ts                  # Environment variable validation
 ├── package.json
 ├── playwright.config.ts
 └── tsconfig.json
@@ -44,17 +43,23 @@ npx playwright install
 
 ## Configuration
 
-Copy `.env.example` to `.env` and fill in the values:
+All environment variables are loaded from a **single `.env` file at the project root** (`paylocity/.env`), shared by both the API and E2E test suites.
+
+Copy `.env.example` to `.env` at the project root and fill in the values:
 
 ```bash
+# From the project root
 cp .env.example .env
 ```
 
-| Variable   | Description                        | Default                                                                 |
-|------------|------------------------------------|-------------------------------------------------------------------------|
-| `BASE_URL` | Base URL of the application        | `https://wmxrwq14uc.execute-api.us-east-1.amazonaws.com/Prod`          |
-| `USERNAME` | Login username                     | `TestUser332`                                                           |
-| `PASSWORD` | Login password                     | `k%&O0vIs48`                                                            |
+| Variable         | Description                        | Required |
+|------------------|------------------------------------|----------|
+| `BASE_URL`       | Base URL of the application        | Yes      |
+| `API_TOKEN`      | API authentication token           | Yes      |
+| `TEST_USERNAME`  | Login username for UI tests        | Yes      |
+| `TEST_PASSWORD`  | Login password for UI tests        | Yes      |
+
+> **No fallback defaults** — if any required variable is missing, the test suite fails immediately with a clear error message.
 
 ## Running Tests
 

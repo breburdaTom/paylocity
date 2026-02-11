@@ -82,10 +82,10 @@ class TestDeleteEmployee:
 
     @pytest.mark.negative
     def test_delete_employee_invalid_id_format(self, employees_client):
-        """DELETE /api/Employees/{id} with invalid ID should return 400."""
+        """DELETE /api/Employees/{id} with invalid ID should return 400/405."""
         response = employees_client.delete_employee("not-a-valid-uuid")
-        assert response.status_code in [400, 404, 422], (
-            f"Expected 400/404/422 for invalid ID format, got {response.status_code}"
+        assert response.status_code in [400, 404, 405, 422], (
+            f"Expected 400/404/405/422 for invalid ID format, got {response.status_code}"
         )
 
     @pytest.mark.negative

@@ -23,9 +23,17 @@ test.describe("Scenario 2: Edit Employee", () => {
   });
 
   test.afterEach(async ({ dashboardPage }) => {
-    // Best-effort cleanup: try to delete any remaining test employees
-    // This is wrapped in try/catch because the employee may already be deleted
-    // or the name may have changed during the test
+    // Best-effort cleanup: try to delete the employee created in beforeEach.
+    // The name may have changed during the test, so we attempt the original name.
+    // Silently ignore errors — the employee may already be deleted or renamed.
+    try {
+      await dashboardPage.clickDeleteForEmployee(
+        originalEmployee.firstName,
+        originalEmployee.lastName
+      );
+    } catch {
+      // Employee already deleted or renamed — nothing to clean up
+    }
   });
 
   test("should open the Edit modal with pre-filled employee data", async ({
