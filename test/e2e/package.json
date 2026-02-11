@@ -1,0 +1,17 @@
+{
+  "name": "paylocity-e2e",
+  "version": "1.0.0",
+  "description": "Playwright E2E test suite for Paylocity Benefits Dashboard",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "test:report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.7.0",
+    "@playwright/test": "^1.52.0",
+    "dotenv": "^17.2.4"
+  }
+}
