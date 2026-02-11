@@ -1,21 +1,7 @@
-/**
- * Environment variable validation and access.
- *
- * All required environment variables are validated at import time.
- * If any required variable is missing, the process fails immediately
- * with a clear error message.
- *
- * Locally: values are loaded from the root .env file via dotenv.
- * On CI: values are injected via GitHub Secrets → workflow env.
- */
-
 import dotenv from "dotenv";
 import path from "path";
 import { existsSync } from "fs";
 
-/**
- * Walk up from the given directory to find the project root (contains .git).
- */
 function findProjectRoot(startDir: string): string {
   let current = startDir;
   while (current !== path.dirname(current)) {

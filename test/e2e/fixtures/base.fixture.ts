@@ -3,9 +3,6 @@ import { LoginPage } from "../pages/login.page";
 import { DashboardPage } from "../pages/dashboard.page";
 import { EmployeeModal } from "../pages/employee-modal.page";
 
-/**
- * Extended test fixtures that provide page objects for every test.
- */
 type PageFixtures = {
   loginPage: LoginPage;
   dashboardPage: DashboardPage;

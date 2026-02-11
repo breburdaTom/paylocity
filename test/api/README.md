@@ -1,18 +1,14 @@
 # Paylocity Benefits API — Test Suite
 
-Automated API test framework for the Paylocity Benefits API using **Python** and **pytest**.
-
----
+API test framework for the Paylocity Benefits API using Python and pytest.
 
 ## Project Structure
 
 ```
 test/api/
+├── conftest.py                 # Shared fixtures (session client, employee factory)
 ├── pytest.ini                  # Pytest configuration
 ├── requirements.txt            # Python dependencies
-├── conftest.py                 # Shared fixtures (session client, employee factory)
-├── .env.example                # Environment variable template
-├── README.md                   # This file
 ├── config/
 │   └── settings.py             # Centralized settings (URLs, auth, timeouts)
 ├── clients/
@@ -21,81 +17,55 @@ test/api/
 ├── models/
 │   └── employee.py             # Pydantic models for request/response validation
 ├── utils/
-│   ├── data_factory.py         # Test data generators (Faker-based)
+│   ├── data_factory.py         # Test data generators (Faker)
 │   └── assertions.py           # Reusable assertion helpers
 └── tests/
-    ├── test_get_employees.py           # GET /api/Employees
-    ├── test_get_employee_by_id.py      # GET /api/Employees/{id}
-    ├── test_create_employee.py         # POST /api/Employees
-    ├── test_update_employee.py         # PUT /api/Employees
-    ├── test_delete_employee.py         # DELETE /api/Employees/{id}
-    ├── test_employee_crud_flow.py      # End-to-end CRUD lifecycle
-    └── test_employee_benefits_calculation.py  # Benefits computation tests
+    ├── test_get_employees.py
+    ├── test_get_employee_by_id.py
+    ├── test_create_employee.py
+    ├── test_update_employee.py
+    ├── test_delete_employee.py
+    ├── test_employee_crud_flow.py
+    └── test_employee_benefits_calculation.py
 ```
-
----
 
 ## Setup
 
-1. **Create a virtual environment** (recommended):
-   ```bash
-   cd test/api
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+```bash
+cd test/api
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Environment variables are loaded from `paylocity/.env` (project root), shared with the E2E suite.
 
-3. **Configure environment**:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your BASE_URL and credentials
-   ```
+```bash
+# From project root
+cp .env.example .env
+```
 
----
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `BASE_URL` | Application base URL | Yes |
+| `API_TOKEN` | API authentication token | Yes |
 
 ## Running Tests
 
-### Run all tests
 ```bash
-pytest
+pytest                          # All tests
+pytest --html=report.html --self-contained-html  # With HTML report
+pytest -m smoke                 # Smoke tests only
+pytest -m negative              # Error/edge case tests
+pytest tests/test_create_employee.py  # Specific file
 ```
-
-### Run with HTML report
-```bash
-pytest --html=report.html --self-contained-html
-```
-
-### Run by marker
-```bash
-pytest -m smoke          # Smoke tests only
-pytest -m regression     # Regression suite
-pytest -m positive       # Happy path tests
-pytest -m negative       # Error/edge case tests
-pytest -m crud           # CRUD operation tests
-```
-
-### Run a specific test file
-```bash
-pytest tests/test_create_employee.py
-```
-
-### Run a specific test
-```bash
-pytest tests/test_create_employee.py::TestCreateEmployee::test_create_employee_returns_200
-```
-
----
 
 ## Markers
 
-| Marker       | Description                              |
-|-------------|------------------------------------------|
-| `smoke`     | Quick validation of core functionality   |
-| `regression`| Full regression test suite               |
-| `positive`  | Happy path / valid input tests           |
-| `negative`  | Error handling / invalid input tests     |
-| `crud`      | CRUD operation tests                     |
+| Marker | Description |
+|--------|-------------|
+| `smoke` | Quick validation of core functionality |
+| `regression` | Full regression suite |
+| `positive` | Happy path tests |
+| `negative` | Error handling / invalid input tests |
+| `crud` | CRUD operation tests |

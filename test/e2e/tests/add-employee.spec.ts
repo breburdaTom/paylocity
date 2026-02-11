@@ -25,17 +25,12 @@ test.describe("Scenario 1: Add Employee", () => {
       employee.lastName,
       employee.dependants
     );
-
-    // Modal should close after submission
     await employeeModal.expectToBeClosed();
-
-    // Employee should appear in the table
     await dashboardPage.expectEmployeeVisible(
       employee.firstName,
       employee.lastName
     );
 
-    // Cleanup: delete the employee after the test
     await dashboardPage.clickDeleteForEmployee(
       employee.firstName,
       employee.lastName
@@ -57,7 +52,6 @@ test.describe("Scenario 1: Add Employee", () => {
     );
     await employeeModal.expectToBeClosed();
 
-    // Verify the row data matches expected calculations
     const rowData = await dashboardPage.getEmployeeRowData(
       employee.firstName,
       employee.lastName
@@ -69,7 +63,6 @@ test.describe("Scenario 1: Add Employee", () => {
     expect(rowData.net).toBeCloseTo(expected.netPerPaycheck, 2);
     expect(rowData.dependants).toBe(0);
 
-    // Cleanup
     await dashboardPage.clickDeleteForEmployee(
       employee.firstName,
       employee.lastName
@@ -92,7 +85,6 @@ test.describe("Scenario 1: Add Employee", () => {
     );
     await employeeModal.expectToBeClosed();
 
-    // Verify the row data matches expected calculations
     const rowData = await dashboardPage.getEmployeeRowData(
       employee.firstName,
       employee.lastName
@@ -104,7 +96,6 @@ test.describe("Scenario 1: Add Employee", () => {
     expect(rowData.net).toBeCloseTo(expected.netPerPaycheck, 2);
     expect(rowData.dependants).toBe(dependants);
 
-    // Cleanup
     await dashboardPage.clickDeleteForEmployee(
       employee.firstName,
       employee.lastName

@@ -1,73 +1,62 @@
 # Paylocity Benefits Dashboard — Test Suite
 
-Automated test suite for the Paylocity Benefits Dashboard — a sample application that allows employers to manage employees and their dependents, with benefit cost calculations and paycheck deductions.
+Automated test suite for the Paylocity Benefits Dashboard, a sample app that lets employers manage employees and their dependents with benefit cost calculations.
 
 ## Application Under Test
 
-The Benefits Dashboard lets an employer:
-
-- **Add** employees with first name, last name, and number of dependents
-- **Edit** existing employee details
-- **Delete** employees
-- **Preview** benefit cost deductions per paycheck
+The Benefits Dashboard allows:
+- Adding employees with first name, last name, and number of dependents
+- Editing existing employee details
+- Deleting employees
+- Previewing benefit cost deductions per paycheck
 
 ### Benefits Calculation Rules
 
-| Rule                        | Value   |
-|-----------------------------|---------|
-| Paycheck amount             | $2,000  |
-| Paychecks per year          | 26      |
-| Employee benefits cost/year | $1,000  |
-| Dependent benefits cost/year| $500    |
-
----
+| Rule | Value |
+|------|-------|
+| Paycheck amount | $2,000 |
+| Paychecks per year | 26 |
+| Employee benefits cost/year | $1,000 |
+| Dependent benefits cost/year | $500 |
 
 ## Project Structure
 
 ```
 paylocity/
-├── .env                        # Shared environment variables (not committed)
-├── .env.example                # Template for .env
-├── .github/workflows/
-│   └── tests.yml               # CI pipeline (GitHub Actions)
+├── .env.example                # Template for environment variables
 ├── test/
-│   ├── api/                    # API test suite (Python + pytest)
-│   └── e2e/                    # E2E test suite (TypeScript + Playwright)
-├── api-bugs/                   # Documented API defects
-├── ui-bugs/                    # Documented UI defects
-└── defect*.md                  # Individual defect reports
+│   ├── api/                    # API tests (Python + pytest)
+│   └── e2e/                    # E2E tests (TypeScript + Playwright)
+├── api-bugs/                   # API defect reports
+└── ui-bugs/                    # UI defect reports
 ```
-
----
 
 ## Test Suites
 
-| Suite | Tech Stack | Location | Details |
-|-------|-----------|----------|---------|
-| **API Tests** | Python 3.12, pytest, requests, Pydantic | `test/api/` | [API Test README](test/api/README.md) |
-| **E2E Tests** | TypeScript, Playwright, Faker | `test/e2e/` | [E2E Test README](test/e2e/README.md) |
-
----
+| Suite | Stack | Location | README |
+|-------|-------|----------|--------|
+| API Tests | Python 3.12, pytest, requests, Pydantic | `test/api/` | [test/api/README.md](test/api/README.md) |
+| E2E Tests | TypeScript, Playwright, Faker | `test/e2e/` | [test/e2e/README.md](test/e2e/README.md) |
 
 ## Quick Start
 
-### 1. Configure environment variables
+### 1. Configure environment
 
-All variables are stored in a **single `.env` file at the project root**, shared by both test suites.
+Both suites share a single `.env` file at the project root:
 
 ```bash
 cp .env.example .env
-# Edit .env with your actual values
+# Fill in your values
 ```
 
-| Variable         | Description                  | Required |
-|------------------|------------------------------|----------|
-| `BASE_URL`       | Application base URL         | Yes      |
-| `API_TOKEN`      | API authentication token     | Yes      |
-| `TEST_USERNAME`  | UI login username            | Yes      |
-| `TEST_PASSWORD`  | UI login password            | Yes      |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `BASE_URL` | Application base URL | Yes |
+| `API_TOKEN` | API authentication token | Yes |
+| `TEST_USERNAME` | UI login username | Yes |
+| `TEST_PASSWORD` | UI login password | Yes |
 
-> **No fallback defaults** — if any variable is missing, the test suite fails immediately with a clear error message.
+If any variable is missing, the test suite fails immediately with a clear error.
 
 ### 2. Run API tests
 
@@ -88,33 +77,15 @@ npx playwright install chromium
 npm test
 ```
 
----
-
 ## CI / GitHub Actions
 
-The CI pipeline (`.github/workflows/tests.yml`) runs both suites **sequentially** on every push/PR to `main`/`master`:
+The pipeline (`.github/workflows/tests.yml`) runs both suites sequentially on push/PR to `main`/`master`. They run sequentially to avoid test data conflicts against the shared backend.
 
-1. **API Tests** — runs first
-2. **E2E Tests** — runs after API tests finish (regardless of outcome)
-3. **Test Results** — unified status gate for branch protection
-
-Suites run sequentially to prevent **test data conflicts** against the shared backend.
-
-### Required GitHub Secrets
-
-| Secret           | Used By    |
-|------------------|------------|
-| `API_TOKEN`      | API tests  |
-| `TEST_USERNAME`  | E2E tests  |
-| `TEST_PASSWORD`  | E2E tests  |
-
-`BASE_URL` is hardcoded in the workflow (not a secret — it's a public URL).
-
----
+Required GitHub Secrets: `API_TOKEN`, `TEST_USERNAME`, `TEST_PASSWORD`.
+`BASE_URL` is hardcoded in the workflow.
 
 ## Defect Reports
 
-Discovered defects are documented in the repository root (`defect*.md`) and categorized in:
-
-- `api-bugs/` — API-level defects
-- `ui-bugs/` — UI-level defects
+Discovered defects are documented in:
+- `api-bugs/` — API-level defects (defect1–7)
+- `ui-bugs/` — UI-level defects (defect1–8)

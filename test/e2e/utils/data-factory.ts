@@ -6,12 +6,6 @@ export interface EmployeeData {
   dependants: number;
 }
 
-/**
- * Generate random employee data for test scenarios.
- *
- * @param overrides - optional partial overrides for any field
- * @returns EmployeeData with random or overridden values
- */
 export function generateEmployee(overrides?: Partial<EmployeeData>): EmployeeData {
   return {
     firstName: overrides?.firstName ?? faker.person.firstName(),
@@ -20,16 +14,10 @@ export function generateEmployee(overrides?: Partial<EmployeeData>): EmployeeDat
   };
 }
 
-/**
- * Generate employee data with a specific number of dependants.
- */
 export function generateEmployeeWithDependants(dependants: number): EmployeeData {
   return generateEmployee({ dependants });
 }
 
-/**
- * Generate employee data with zero dependants.
- */
 export function generateEmployeeNoDependants(): EmployeeData {
   return generateEmployee({ dependants: 0 });
 }

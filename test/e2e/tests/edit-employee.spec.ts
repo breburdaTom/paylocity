@@ -6,7 +6,6 @@ test.describe("Scenario 2: Edit Employee", () => {
   let originalEmployee: ReturnType<typeof generateEmployee>;
 
   test.beforeEach(async ({ dashboardPage, employeeModal }) => {
-    // Create an employee to edit in each test
     originalEmployee = generateEmployee({ dependants: 1 });
 
     await dashboardPage.clickAddEmployee();
@@ -23,9 +22,7 @@ test.describe("Scenario 2: Edit Employee", () => {
   });
 
   test.afterEach(async ({ dashboardPage }) => {
-    // Best-effort cleanup: try to delete the employee created in beforeEach.
-    // The name may have changed during the test, so we attempt the original name.
-    // Skip if the employee row is no longer visible (already deleted or renamed).
+    // Best-effort cleanup — skip if the employee was already deleted or renamed
     const row = dashboardPage.getEmployeeRow(
       originalEmployee.firstName,
       originalEmployee.lastName
@@ -37,7 +34,7 @@ test.describe("Scenario 2: Edit Employee", () => {
           originalEmployee.lastName
         );
       } catch {
-        // Silently ignore — employee may have been deleted mid-operation
+        // ignore
       }
     }
   });
@@ -58,10 +55,8 @@ test.describe("Scenario 2: Edit Employee", () => {
       originalEmployee.dependants
     );
 
-    // Cancel to close without saving
     await employeeModal.cancel();
 
-    // Cleanup
     await dashboardPage.clickDeleteForEmployee(
       originalEmployee.firstName,
       originalEmployee.lastName
@@ -90,19 +85,15 @@ test.describe("Scenario 2: Edit Employee", () => {
     );
     await employeeModal.expectToBeClosed();
 
-    // Original name should no longer be visible
     await dashboardPage.expectEmployeeNotVisible(
       originalEmployee.firstName,
       originalEmployee.lastName
     );
-
-    // Updated name should be visible
     await dashboardPage.expectEmployeeVisible(
       updatedEmployee.firstName,
       updatedEmployee.lastName
     );
 
-    // Cleanup
     await dashboardPage.clickDeleteForEmployee(
       updatedEmployee.firstName,
       updatedEmployee.lastName
@@ -129,7 +120,6 @@ test.describe("Scenario 2: Edit Employee", () => {
     );
     await employeeModal.expectToBeClosed();
 
-    // Verify updated row data
     const rowData = await dashboardPage.getEmployeeRowData(
       originalEmployee.firstName,
       originalEmployee.lastName
@@ -139,7 +129,6 @@ test.describe("Scenario 2: Edit Employee", () => {
     expect(rowData.benefitsCost).toBeCloseTo(expected.benefitsCostPerPaycheck, 2);
     expect(rowData.net).toBeCloseTo(expected.netPerPaycheck, 2);
 
-    // Cleanup
     await dashboardPage.clickDeleteForEmployee(
       originalEmployee.firstName,
       originalEmployee.lastName
@@ -166,7 +155,6 @@ test.describe("Scenario 2: Edit Employee", () => {
     );
     await employeeModal.expectToBeClosed();
 
-    // Verify updated employee is in the table
     await dashboardPage.expectEmployeeVisible(
       updatedEmployee.firstName,
       updatedEmployee.lastName
@@ -181,7 +169,6 @@ test.describe("Scenario 2: Edit Employee", () => {
     expect(rowData.benefitsCost).toBeCloseTo(expected.benefitsCostPerPaycheck, 2);
     expect(rowData.net).toBeCloseTo(expected.netPerPaycheck, 2);
 
-    // Cleanup
     await dashboardPage.clickDeleteForEmployee(
       updatedEmployee.firstName,
       updatedEmployee.lastName

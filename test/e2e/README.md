@@ -1,90 +1,83 @@
 # Paylocity Benefits Dashboard — E2E Tests
 
-End-to-end test suite for the Paylocity Benefits Dashboard application using [Playwright](https://playwright.dev/).
+End-to-end tests for the Paylocity Benefits Dashboard using [Playwright](https://playwright.dev/).
 
 ## Project Structure
 
 ```
 test/e2e/
-├── fixtures/               # Playwright test fixtures (POM wiring, auth)
-│   ├── auth.fixture.ts     # Authenticated fixture (auto-login before tests)
-│   └── base.fixture.ts     # Base fixture providing page objects
-├── pages/                  # Page Object Models
-│   ├── dashboard.page.ts   # Benefits Dashboard page
+├── fixtures/
+│   ├── auth.fixture.ts         # Auto-login + wait for dashboard ready
+│   └── base.fixture.ts         # Base fixture providing page objects
+├── pages/
+│   ├── dashboard.page.ts       # Dashboard page (table, delete confirmation)
 │   ├── employee-modal.page.ts  # Add/Edit Employee modal
-│   ├── login.page.ts       # Login page
-│   └── index.ts            # Barrel export
-├── tests/                  # Test specs
-│   ├── add-employee.spec.ts    # Scenario 1: Add Employee
-│   ├── delete-employee.spec.ts # Scenario 3: Delete Employee
-│   ├── edit-employee.spec.ts   # Scenario 2: Edit Employee
-│   └── login.spec.ts           # Login page tests
-├── utils/                  # Shared utilities
-│   ├── benefits-calculator.ts  # Benefits cost calculation helpers
-│   ├── data-factory.ts         # Random test data generation
+│   ├── login.page.ts           # Login page
+│   └── index.ts                # Barrel export
+├── tests/
+│   ├── login.spec.ts           # Login page tests
+│   ├── add-employee.spec.ts    # Add Employee tests
+│   ├── edit-employee.spec.ts   # Edit Employee tests
+│   └── delete-employee.spec.ts # Delete Employee tests
+├── utils/
+│   ├── benefits-calculator.ts  # Benefits cost calculation
+│   ├── data-factory.ts         # Random test data (Faker)
 │   └── env.ts                  # Environment variable validation
 ├── package.json
 ├── playwright.config.ts
 └── tsconfig.json
 ```
 
-## Prerequisites
-
-- **Node.js** ≥ 18
-- **npm** ≥ 9
-
 ## Setup
 
 ```bash
 cd test/e2e
 npm install
-npx playwright install
+npx playwright install chromium
 ```
 
 ## Configuration
 
-All environment variables are loaded from a **single `.env` file at the project root** (`paylocity/.env`), shared by both the API and E2E test suites.
-
-Copy `.env.example` to `.env` at the project root and fill in the values:
+Environment variables are loaded from `paylocity/.env` (project root), shared with the API suite.
 
 ```bash
-# From the project root
+# From project root
 cp .env.example .env
 ```
 
-| Variable         | Description                        | Required |
-|------------------|------------------------------------|----------|
-| `BASE_URL`       | Base URL of the application        | Yes      |
-| `API_TOKEN`      | API authentication token           | Yes      |
-| `TEST_USERNAME`  | Login username for UI tests        | Yes      |
-| `TEST_PASSWORD`  | Login password for UI tests        | Yes      |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `BASE_URL` | Base URL of the application | Yes |
+| `TEST_USERNAME` | Login username | Yes |
+| `TEST_PASSWORD` | Login password | Yes |
 
-> **No fallback defaults** — if any required variable is missing, the test suite fails immediately with a clear error message.
+Missing variables cause an immediate failure with a clear error message.
 
 ## Running Tests
 
 ```bash
-# Run all tests (headless)
-npm test
-
-# Run tests in headed mode (visible browser)
-npm run test:headed
-
-# Run tests with Playwright UI
-npm run test:ui
-
-# Debug tests step-by-step
-npm run test:debug
-
-# Open the HTML report
-npm run test:report
+npm test                # All tests (headless)
+npm run test:headed     # Visible browser
+npm run test:ui         # Playwright UI mode
+npm run test:debug      # Step-by-step debug
+npm run test:report     # Open HTML report
 ```
 
-## Benefits Calculation Rules
+## Known Failing Tests
 
-| Rule                          | Value              |
-|-------------------------------|--------------------|
-| Paycheck amount               | $2,000             |
-| Paychecks per year            | 26                 |
-| Employee benefits cost/year   | $1,000             |
-| Dependent benefits cost/year  | $500               |
+Two tests are **intentionally left failing** because they catch real application bugs:
+
+| Test | Bug |
+|------|-----|
+| `login.spec.ts` — "should show error with invalid credentials" | App returns HTTP 405 instead of showing error (ui-bugs/defect6) |
+| `edit-employee.spec.ts` — "should update employee dependants and recalculate benefits" | Update doesn't persist dependants change (ui-bugs/defect8) |
+
+## Issues Encountered During Development
+
+**Modal selector ambiguity** — The page has two Bootstrap modals (`#employeeModal` for add/edit, `#deleteModal` for delete confirmation). Both contain `.modal-content`, which caused Playwright strict mode violations. Fixed by scoping to `#employeeModal .modal-content`.
+
+**Race condition on page load** — Playwright clicked the "Add Employee" button before jQuery event handlers were bound. The button was visible (HTML rendered) but the `$('#add').on('click', ...)` handler wasn't attached yet. Fixed by waiting for table data rows to appear in `auth.fixture.ts`, which proves all JS has executed.
+
+**Delete confirmation not handled** — `clickDeleteForEmployee()` only clicked the X icon on the row but didn't click the "Delete" button in the confirmation modal. Fixed by adding a `confirmDelete()` step that clicks the button and waits for the modal to close.
+
+**afterEach cleanup timeout** — Edit tests had an `afterEach` that tried to delete the employee by its original name. When the test already deleted it or renamed it, the locator would wait until the 30s test timeout. Fixed by checking `row.isVisible()` before attempting deletion.
