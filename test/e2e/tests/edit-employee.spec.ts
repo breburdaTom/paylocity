@@ -63,6 +63,45 @@ test.describe("Scenario 2: Edit Employee", () => {
     );
   });
 
+  test("should not save changes when clicking Cancel in Edit modal", async ({
+    dashboardPage,
+    employeeModal,
+  }) => {
+    const originalBenefits = calculateBenefits(originalEmployee.dependants);
+    const beforeData = await dashboardPage.getEmployeeRowData(
+      originalEmployee.firstName,
+      originalEmployee.lastName
+    );
+
+    await dashboardPage.clickEditForEmployee(
+      originalEmployee.firstName,
+      originalEmployee.lastName
+    );
+    await employeeModal.expectToBeVisible();
+
+    await employeeModal.fillEmployeeForm("Changed", "Name", 10);
+    await employeeModal.cancel();
+
+    await dashboardPage.expectEmployeeVisible(
+      originalEmployee.firstName,
+      originalEmployee.lastName
+    );
+
+    const afterData = await dashboardPage.getEmployeeRowData(
+      originalEmployee.firstName,
+      originalEmployee.lastName
+    );
+
+    expect(afterData.dependants).toBe(beforeData.dependants);
+    expect(afterData.benefitsCost).toBe(beforeData.benefitsCost);
+    expect(afterData.net).toBe(beforeData.net);
+
+    await dashboardPage.clickDeleteForEmployee(
+      originalEmployee.firstName,
+      originalEmployee.lastName
+    );
+  });
+
   test("should update employee first name and reflect in the table", async ({
     dashboardPage,
     employeeModal,

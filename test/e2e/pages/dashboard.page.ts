@@ -8,6 +8,7 @@ export class DashboardPage {
   readonly employeesTableRows: Locator;
   readonly deleteModal: Locator;
   readonly deleteConfirmButton: Locator;
+  readonly deleteCancelButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +18,7 @@ export class DashboardPage {
     this.employeesTableRows = page.locator("#employeesTable tbody tr");
     this.deleteModal = page.locator("#deleteModal");
     this.deleteConfirmButton = page.locator("#deleteEmployee");
+    this.deleteCancelButton = this.deleteModal.getByRole("button", { name: "Cancel" });
   }
 
   /**
@@ -63,6 +65,17 @@ export class DashboardPage {
     const row = this.getEmployeeRow(firstName, lastName);
     await row.locator("i.fa-times").click();
     await this.confirmDelete();
+  }
+
+  async openDeleteModalForEmployee(firstName: string, lastName: string): Promise<void> {
+    const row = this.getEmployeeRow(firstName, lastName);
+    await row.locator("i.fa-times").click();
+    await expect(this.deleteModal).toBeVisible();
+  }
+
+  async cancelDelete(): Promise<void> {
+    await this.deleteCancelButton.click();
+    await expect(this.deleteModal).not.toBeVisible();
   }
 
   private async confirmDelete(): Promise<void> {

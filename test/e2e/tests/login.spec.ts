@@ -40,3 +40,26 @@ test.describe("Login Page", () => {
     await loginPage.expectErrorMessage();
   });
 });
+
+test.describe("Authentication", () => {
+  test("should redirect to login when accessing dashboard without authentication", async ({
+    dashboardPage,
+    loginPage,
+  }) => {
+    await dashboardPage.goto();
+    await loginPage.expectToBeVisible();
+  });
+
+  test("should redirect to login after logging out", async ({
+    loginPage,
+    dashboardPage,
+    page,
+  }) => {
+    await loginPage.goto();
+    await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
+    await dashboardPage.expectToBeVisible();
+
+    await page.getByRole("link", { name: "Log Out" }).click();
+    await loginPage.expectToBeVisible();
+  });
+});

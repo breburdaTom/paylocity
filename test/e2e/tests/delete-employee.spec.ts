@@ -31,6 +31,37 @@ test.describe("Scenario 3: Delete Employee", () => {
     );
   });
 
+  test("should not delete employee when clicking Cancel in confirmation modal", async ({
+    dashboardPage,
+    employeeModal,
+  }) => {
+    const employee = generateEmployee();
+
+    await dashboardPage.clickAddEmployee();
+    await employeeModal.addEmployee(
+      employee.firstName,
+      employee.lastName,
+      employee.dependants
+    );
+    await employeeModal.expectToBeClosed();
+
+    await dashboardPage.openDeleteModalForEmployee(
+      employee.firstName,
+      employee.lastName
+    );
+    await dashboardPage.cancelDelete();
+
+    await dashboardPage.expectEmployeeVisible(
+      employee.firstName,
+      employee.lastName
+    );
+
+    await dashboardPage.clickDeleteForEmployee(
+      employee.firstName,
+      employee.lastName
+    );
+  });
+
   test("should not affect other employees when deleting one", async ({
     dashboardPage,
     employeeModal,

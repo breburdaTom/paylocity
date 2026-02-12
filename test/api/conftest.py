@@ -16,6 +16,14 @@ def employees_client():
     client.close()
 
 
+@pytest.fixture(scope="session")
+def unauthenticated_client():
+    """Provide an EmployeesClient with no auth token."""
+    client = EmployeesClient(token=None)
+    yield client
+    client.close()
+
+
 @pytest.fixture()
 def created_employee(employees_client):
     """

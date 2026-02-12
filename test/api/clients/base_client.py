@@ -12,20 +12,20 @@ from config.settings import BASE_URL, API_TOKEN, REQUEST_TIMEOUT
 logger = logging.getLogger(__name__)
 
 
+_UNSET = object()
+
+
 class BaseClient:
     """Base API client with shared HTTP methods and authentication."""
 
-    def __init__(self, base_url: Optional[str] = None, token: Optional[str] = None):
+    def __init__(self, base_url: Optional[str] = None, token=_UNSET):
         self.base_url = (base_url or BASE_URL).rstrip("/")
         self.session = requests.Session()
         self.timeout = REQUEST_TIMEOUT
 
-        # Set up authentication
-        token = token or API_TOKEN
-        if token:
-            self.session.headers.update({"Authorization": f"Basic {token}"})
-        elif not token:
-            logger.warning("No API token provided. Requests may fail due to authentication errors.")
+        resolved_token = API_TOKEN if token is _UNSET else token
+        if resolved_token:
+            self.session.headers.update({"Authorization": f"Basic {resolved_token}"})
 
         self.session.headers.update({
             "Content-Type": "application/json",

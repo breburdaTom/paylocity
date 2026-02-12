@@ -139,6 +139,57 @@ class TestEmployeeBenefitsCalculation:
 
     @pytest.mark.positive
     @pytest.mark.regression
+    def test_exact_benefits_cost_zero_dependants(self, employees_client):
+        """Benefits cost for 0 dependants should be exactly $1000/26 = $38.46 per paycheck."""
+        payload = generate_employee_payload(salary=52000.0, dependants=0)
+        response = employees_client.create_employee(payload)
+        assert_status_code(response, 200)
+        data = response.json()
+
+        # $1000/year / 26 paychecks = $38.46 per paycheck
+        expected_benefits = round(1000 / 26, 2)
+        assert round(data.get("benefitsCost", 0), 2) == expected_benefits, (
+            f"Expected benefitsCost {expected_benefits}, got {data.get('benefitsCost')}"
+        )
+
+        expected_gross = round(52000 / 26, 2)
+        assert round(data.get("gross", 0), 2) == expected_gross, (
+            f"Expected gross {expected_gross}, got {data.get('gross')}"
+        )
+
+        expected_net = round(expected_gross - expected_benefits, 2)
+        assert round(data.get("net", 0), 2) == expected_net, (
+            f"Expected net {expected_net}, got {data.get('net')}"
+        )
+
+        employees_client.delete_employee(str(data["id"]))
+
+    @pytest.mark.positive
+    @pytest.mark.regression
+    def test_exact_benefits_cost_with_dependants(self, employees_client):
+        """Benefits cost for 3 dependants should be ($1000 + 3*$500)/26 = $96.15 per paycheck."""
+        payload = generate_employee_payload(salary=52000.0, dependants=3)
+        response = employees_client.create_employee(payload)
+        assert_status_code(response, 200)
+        data = response.json()
+
+        # ($1000 + 3 * $500) / 26 = $2500 / 26 = $96.15
+        annual_cost = 1000 + 3 * 500
+        expected_benefits = round(annual_cost / 26, 2)
+        assert round(data.get("benefitsCost", 0), 2) == expected_benefits, (
+            f"Expected benefitsCost {expected_benefits}, got {data.get('benefitsCost')}"
+        )
+
+        expected_gross = round(52000 / 26, 2)
+        expected_net = round(expected_gross - expected_benefits, 2)
+        assert round(data.get("net", 0), 2) == expected_net, (
+            f"Expected net {expected_net}, got {data.get('net')}"
+        )
+
+        employees_client.delete_employee(str(data["id"]))
+
+    @pytest.mark.positive
+    @pytest.mark.regression
     def test_same_salary_same_dependants_same_benefits(self, employees_client):
         """Two employees with the same salary and dependants should have the same benefits."""
         payload_1 = generate_employee_payload(salary=52000.0, dependants=2)
