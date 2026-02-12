@@ -36,3 +36,16 @@ class TestAuthentication:
         assert response.status_code == 401, (
             f"Expected 401 for unauthenticated request, got {response.status_code}"
         )
+
+    @pytest.mark.negative
+    def test_put_employee_without_auth_returns_401(self, unauthenticated_client):
+        """PUT /api/Employees without Authorization header should return 401."""
+        response = unauthenticated_client.update_employee({
+            "id": random_uuid(),
+            "firstName": "Test",
+            "lastName": "User",
+            "username": "testuser",
+        })
+        assert response.status_code == 401, (
+            f"Expected 401 for unauthenticated request, got {response.status_code}"
+        )

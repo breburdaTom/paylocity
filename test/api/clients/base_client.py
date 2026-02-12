@@ -32,6 +32,12 @@ class BaseClient:
             "Accept": "application/json",
         })
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def _url(self, endpoint: str) -> str:
         """Build full URL from endpoint."""
         return f"{self.base_url}{endpoint}"
@@ -47,7 +53,8 @@ class BaseClient:
     def post(self, endpoint: str, json: dict = None, **kwargs) -> requests.Response:
         """Send a POST request."""
         url = self._url(endpoint)
-        logger.info(f"POST {url} | Body: {json}")
+        logger.info(f"POST {url}")
+        logger.debug(f"Request body: {json}")
         response = self.session.post(url, json=json, timeout=self.timeout, **kwargs)
         logger.info(f"Response: {response.status_code}")
         return response
@@ -55,7 +62,8 @@ class BaseClient:
     def put(self, endpoint: str, json: dict = None, **kwargs) -> requests.Response:
         """Send a PUT request."""
         url = self._url(endpoint)
-        logger.info(f"PUT {url} | Body: {json}")
+        logger.info(f"PUT {url}")
+        logger.debug(f"Request body: {json}")
         response = self.session.put(url, json=json, timeout=self.timeout, **kwargs)
         logger.info(f"Response: {response.status_code}")
         return response

@@ -206,8 +206,9 @@ class TestUpdateEmployee:
             "lastName": "Employee",
         }
         response = employees_client.update_employee(update_payload)
-        assert response.status_code in [400, 404, 405, 422], (
-            f"Expected 400/404/405/422 for missing id, got {response.status_code}"
+        # Known API behavior: returns 405 instead of 400 (see api-bugs/defect8)
+        assert response.status_code in [400, 422], (
+            f"Expected 400/422 for missing id, got {response.status_code}"
         )
 
     @pytest.mark.negative

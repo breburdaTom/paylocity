@@ -26,7 +26,12 @@ export class DashboardPage {
    * has fully executed before interacting with the page.
    */
   async waitForTableData(): Promise<void> {
-    await this.employeesTableRows.first().waitFor({ state: "visible", timeout: 10_000 });
+    try {
+      await this.employeesTableRows.first().waitFor({ state: "visible", timeout: 10_000 });
+    } catch {
+      // Table may be empty — verify the table itself is present
+      await this.employeesTable.waitFor({ state: "visible", timeout: 5_000 });
+    }
   }
 
   async goto(): Promise<void> {
