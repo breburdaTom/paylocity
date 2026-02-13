@@ -31,7 +31,7 @@ paylocity/
 │   ├── api-bugs/                   # API defect reports (defect1–8)
 │   └── ui-bugs/                    # UI defect reports (defect1–9)
 ├── ui-bugs/                        # Additional UI defect reports (defect10)
-├── test/
+└── test/
     ├── api/                        # API tests (Python + pytest)
     └── e2e/                        # E2E tests (TypeScript + Playwright)   
 ```
@@ -93,5 +93,4 @@ Required GitHub Secrets: `API_TOKEN`, `TEST_USERNAME`, `TEST_PASSWORD`.
 
 Discovered defects are documented in:
 - `defects/api-bugs/` — API-level defects (defect1–8)
-- `defects/ui-bugs/` — UI-level defects (defect1–9)
-- `ui-bugs/` — Additional UI defects (defect10)
+- `defects/ui-bugs/` — UI-level defects (defect1–10)
