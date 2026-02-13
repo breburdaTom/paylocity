@@ -63,15 +63,6 @@ npm run test:debug      # Step-by-step debug
 npm run test:report     # Open HTML report
 ```
 
-## Known Failing Tests
-
-Two tests are **intentionally left failing** because they catch real application bugs:
-
-| Test | Bug |
-|------|-----|
-| `login.spec.ts` — "should show error with invalid credentials" | App returns HTTP 405 instead of showing error (ui-bugs/defect6) |
-| `edit-employee.spec.ts` — "should update employee dependants and recalculate benefits" | Update doesn't persist dependants change (ui-bugs/defect8) |
-
 ## Issues Encountered During Development
 
 **Modal selector ambiguity** — The page has two Bootstrap modals (`#employeeModal` for add/edit, `#deleteModal` for delete confirmation). Both contain `.modal-content`, which caused Playwright strict mode violations. Fixed by scoping to `#employeeModal .modal-content`.
