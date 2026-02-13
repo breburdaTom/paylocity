@@ -23,12 +23,17 @@ The Benefits Dashboard allows:
 
 ```
 paylocity/
-├── .env.example                # Template for environment variables
+├── .env.example                    # Template for environment variables
+├── .github/
+│   └── workflows/
+│       └── tests.yml               # CI pipeline (GitHub Actions)
+├── defects/
+│   ├── api-bugs/                   # API defect reports (defect1–8)
+│   └── ui-bugs/                    # UI defect reports (defect1–9)
+├── ui-bugs/                        # Additional UI defect reports (defect10)
 ├── test/
-│   ├── api/                    # API tests (Python + pytest)
-│   └── e2e/                    # E2E tests (TypeScript + Playwright)
-├── api-bugs/                   # API defect reports
-└── ui-bugs/                    # UI defect reports
+    ├── api/                        # API tests (Python + pytest)
+    └── e2e/                        # E2E tests (TypeScript + Playwright)   
 ```
 
 ## Test Suites
@@ -79,7 +84,7 @@ npm test
 
 ## CI / GitHub Actions
 
-The pipeline (`.github/workflows/tests.yml`) runs both suites sequentially on push/PR to `main`/`master`. They run sequentially to avoid test data conflicts against the shared backend.
+The pipeline (`.github/workflows/tests.yml`) runs both suites sequentially on push/PR to `main`/`master`, and can also be triggered manually via `workflow_dispatch`. The suites run sequentially to avoid test data conflicts against the shared backend.
 
 Required GitHub Secrets: `API_TOKEN`, `TEST_USERNAME`, `TEST_PASSWORD`.
 `BASE_URL` is hardcoded in the workflow.
@@ -87,5 +92,6 @@ Required GitHub Secrets: `API_TOKEN`, `TEST_USERNAME`, `TEST_PASSWORD`.
 ## Defect Reports
 
 Discovered defects are documented in:
-- `api-bugs/` — API-level defects (defect1–7)
-- `ui-bugs/` — UI-level defects (defect1–8)
+- `defects/api-bugs/` — API-level defects (defect1–8)
+- `defects/ui-bugs/` — UI-level defects (defect1–9)
+- `ui-bugs/` — Additional UI defects (defect10)
