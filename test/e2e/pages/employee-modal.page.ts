@@ -10,7 +10,6 @@ export class EmployeeModal {
   readonly addButton: Locator;
   readonly updateButton: Locator;
   readonly cancelButton: Locator;
-  readonly closeButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,7 +21,6 @@ export class EmployeeModal {
     this.addButton = page.getByRole("button", { name: "Add", exact: true });
     this.updateButton = page.getByRole("button", { name: "Update" });
     this.cancelButton = page.getByRole("button", { name: "Cancel" });
-    this.closeButton = page.getByRole("button", { name: "Close" });
   }
 
   async fillEmployeeForm(
@@ -48,10 +46,6 @@ export class EmployeeModal {
 
   async cancel(): Promise<void> {
     await this.cancelButton.click();
-  }
-
-  async close(): Promise<void> {
-    await this.closeButton.click();
   }
 
   async addEmployee(

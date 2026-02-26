@@ -1,33 +1,10 @@
-"""
-Pydantic models for the Employee schema, used for request/response validation.
-"""
+"""Pydantic model used to validate employee API responses in tests."""
 
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
-
-
-class EmployeeRequest(BaseModel):
-    """Model for creating/updating an employee (writable fields only)."""
-
-    username: str = Field(..., min_length=1, max_length=50)
-    firstName: str = Field(..., min_length=1, max_length=50)
-    lastName: str = Field(..., min_length=1, max_length=50)
-    dependants: Optional[int] = Field(default=0, ge=0, le=32)
-    salary: Optional[float] = None
-
-
-class EmployeeUpdateRequest(BaseModel):
-    """Model for updating an employee (includes id)."""
-
-    id: str
-    username: str = Field(..., min_length=1, max_length=50)
-    firstName: str = Field(..., min_length=1, max_length=50)
-    lastName: str = Field(..., min_length=1, max_length=50)
-    dependants: Optional[int] = Field(default=0, ge=0, le=32)
-    salary: Optional[float] = None
+from pydantic import BaseModel
 
 
 class EmployeeResponse(BaseModel):

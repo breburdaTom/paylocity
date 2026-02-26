@@ -42,17 +42,6 @@ export class DashboardPage {
     await this.addEmployeeButton.click();
   }
 
-  async clickEditAction(rowIndex: number): Promise<void> {
-    const row = this.employeesTableRows.nth(rowIndex);
-    await row.locator("i.fa-edit").click();
-  }
-
-  async clickDeleteAction(rowIndex: number): Promise<void> {
-    const row = this.employeesTableRows.nth(rowIndex);
-    await row.locator("i.fa-times").click();
-    await this.confirmDelete();
-  }
-
   getEmployeeRow(firstName: string, lastName: string): Locator {
     return this.employeesTableRows.filter({
       hasText: `${firstName}`,
@@ -118,10 +107,6 @@ export class DashboardPage {
   async expectEmployeeNotVisible(firstName: string, lastName: string): Promise<void> {
     const row = this.getEmployeeRow(firstName, lastName);
     await expect(row).not.toBeVisible();
-  }
-
-  async expectEmployeeCount(count: number): Promise<void> {
-    await expect(this.employeesTableRows).toHaveCount(count);
   }
 }
 

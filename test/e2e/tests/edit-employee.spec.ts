@@ -67,7 +67,6 @@ test.describe("Scenario 2: Edit Employee", () => {
     dashboardPage,
     employeeModal,
   }) => {
-    const originalBenefits = calculateBenefits(originalEmployee.dependants);
     const beforeData = await dashboardPage.getEmployeeRowData(
       originalEmployee.firstName,
       originalEmployee.lastName
